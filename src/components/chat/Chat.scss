@@ -1,0 +1,9 @@
+$chat-bg: #684F7D;
+
+.chat-body {
+    flex: 4;
+    height: 100%;
+    background-color: $chat-bg;
+    border-top-right-radius: 1.4rem;
+    border-bottom-right-radius: 1.4rem;
+}

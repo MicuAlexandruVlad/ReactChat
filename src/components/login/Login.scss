@@ -1,0 +1,59 @@
+
+
+$main: #4F50E8;
+$secondary: #E552FB;
+
+.login-body {
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+
+    .container {
+        width: 400px;
+        height: fit-content;
+
+        .top {
+            align-items: center;
+            margin-bottom: 2rem;
+
+            h2 {
+                margin-left: 1rem;
+            }
+
+            .logo {
+                width: 50px;
+                height: 50px;
+                object-fit: contain;
+            }
+        }
+
+        .sign-up {
+            margin-left: auto;
+            font-weight: 500;
+            cursor: pointer;
+            transition: .15s ease-out;
+            margin-bottom: 2rem;
+
+            &:hover {
+                color: $main;
+            }
+        }
+
+        Button {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+

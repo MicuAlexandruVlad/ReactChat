@@ -1,0 +1,65 @@
+
+
+.conversation-body {
+    
+    justify-items: center;
+    padding-top: .7rem;
+    padding-bottom: .7rem;
+    cursor: pointer;
+    transition: .15s ease-out;
+
+    &:hover {
+        background-color: #35244D;
+    }
+
+    .profile-holder {
+        border-radius: 50%;
+        margin-left: 1rem;
+        margin-top: auto;
+        margin-bottom: auto;
+
+        img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 50%;
+            border: none;
+        }
+    }
+
+    .holder {
+
+        margin-left: 1rem;
+        margin-right: 1rem;
+        margin-top: auto;
+        margin-bottom: auto;
+        width: 100%;
+
+        .name-holder {
+
+            .name {
+                font-size: 1.05em;
+                color: white;
+                font-weight: 600;
+                margin-bottom: .4rem;
+                margin-top: auto;
+                margin-bottom: auto;
+            }
+
+            .timestamp {
+                font-size: .9em;
+                color: #6D5A86;
+                margin-left: auto;
+                margin-top: auto;
+                margin-bottom: auto;
+            }
+        }
+
+        .message {
+            font-size: 1em;
+            color: #6D5A86;
+            margin-top: .4rem;
+            font-weight: 500;
+        }
+    }
+}

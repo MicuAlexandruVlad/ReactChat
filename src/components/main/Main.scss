@@ -1,0 +1,100 @@
+
+$main: #4F50E8;
+$secondary: #E552FB;
+$bg-1: #594280;
+$bg-2: #B4758D;
+$nav-bg:#35244D;
+$conversations-bg: #402E58;
+$chat-bg: #684F7D;
+
+.main-body {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 0;
+    background: hsla(276, 35%, 60%, 1);
+
+    background: radial-gradient(circle, hsla(276, 35%, 60%, 1) 28%, hsla(264, 29%, 43%, 1) 88%);
+    
+    background: -moz-radial-gradient(circle, hsla(276, 35%, 60%, 1) 28%, hsla(264, 29%, 43%, 1) 88%);
+    
+    background: -webkit-radial-gradient(circle, hsla(276, 35%, 60%, 1) 28%, hsla(264, 29%, 43%, 1) 88%);
+
+    .messenger-container {
+        position: absolute;
+        z-index: 1;
+        box-shadow: 0px 0px 36px 4px rgba(0, 0, 0, 0.349);
+        top: 4rem;
+        left: 4rem;
+        right: 4rem;
+        bottom: 4rem;
+        border-radius: 2rem;
+        overflow: hidden;
+
+        .side-nav {
+            height: 100%;
+            width: 80px;
+            border-bottom-left-radius: 1.4rem;
+            border-top-left-radius: 1.4rem;
+            background-color: $nav-bg;
+
+            .icons {
+                height: fit-content;
+                margin-top: auto;
+                margin-bottom: auto;
+
+                .icon-holder {
+                    width: 100%;
+                    transition: .15s ease-out;
+                    padding-top: 1rem;
+                    padding-bottom: 1rem;
+                    cursor: pointer;
+
+                    .side-nav-icon {
+                        width: 40px;
+                        height: 40px;
+                        object-fit: contain;
+                        margin: auto;
+                        cursor: pointer;
+                        transition: .15s ease-out;
+                    }
+
+                    &:hover {
+                        background-color: $conversations-bg;
+
+                        .side-nav-icon {
+                            filter: brightness(10);
+                        }
+                    }
+                }
+            }
+        }
+
+        .contacts {
+            height: 100%;
+            flex: 4;
+            background-color: $conversations-bg;
+        }
+
+        .chat {
+            height: 100%;
+            flex: 15;
+            background-color: $chat-bg;
+            border-top-right-radius: 1.4rem;
+            border-bottom-right-radius: 1.4rem;
+        }
+    }
+}
+
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
