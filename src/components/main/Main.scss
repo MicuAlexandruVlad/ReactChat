@@ -88,6 +88,13 @@ $chat-bg: #684F7D;
     }
 }
 
+.icon-holder-active {
+    background-color: $conversations-bg;
+
+    .icon-active {
+        filter: brightness(10);
+    }
+}
 
 .flex-row {
     display: flex;

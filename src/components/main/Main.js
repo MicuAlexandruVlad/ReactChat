@@ -3,27 +3,61 @@ import './Main.scss'
 import signOutIcon from '../../assets/logout.png'
 import settingsIcon from '../../assets/settings.png'
 import chatIcon from '../../assets/chat.png'
+import exploreIcon from '../../assets/explore.png'
 import { connect } from 'react-redux'
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
 import { signOutUser } from '../../actions/authUser'
 import { Switch, withRouter, Route } from 'react-router-dom'
 import Conversations from '../conversations/Conversations'
 import Settings from '../settings/Settings'
+import Explore from '../explore/Explore'
+import SignOutDialog from '../../shared/components/sign-out-dialog/SignOutDialog'
+import Client from '../../utils/Client'
+import { getUsers } from '../../actions/foundUsers'
 
 
 class Main extends Component {
 
     state = {
         dialogOpen: false,
+        chatActive: true,
+        exploreActive: false,
+        settingsActive: false,
     }
 
     componentDidMount() {
         // this.onChat()
+        const client = new Client()
+
+        client.getUsers().then(snapshot => {
+            this.props.dispatch(getUsers(snapshot))
+        })
+    }
+
+    onChat() {
+        this.props.history.push("/main/conversations/chat")
+        this.setState({
+            chatActive: true,
+            exploreActive: false,
+            settingsActive: false,
+        })
+    }
+
+    onExplore() {
+        this.props.history.push("/main/explore")
+        this.setState({
+            chatActive: false,
+            exploreActive: true,
+            settingsActive: false,
+        })
+    }
+
+    onSettings() {
+        this.props.history.push("/main/settings")
+        this.setState({
+            chatActive: false,
+            exploreActive: false,
+            settingsActive: true,
+        })
     }
 
     onSignOut() {
@@ -32,15 +66,7 @@ class Main extends Component {
         })
     }
 
-    onSettings() {
-        this.props.history.push("/main/settings")
-    }
-
-    onChat() {
-        this.props.history.push("/main/conversations/chat")
-    }
-
-    handleClose(option) {
+    handleClose = (option) => {
         if (option === 1) {
             this.handleSignOut()
         }
@@ -63,13 +89,30 @@ class Main extends Component {
                         <div className="icons flex-col">
                             <div 
                                 onClick={ () => this.onChat() }
-                                className="icon-holder flex-col">
-                                <img src={ chatIcon } className="side-nav-icon"/>
+                                className={ this.state.chatActive ? 
+                                    "icon-holder flex-col icon-holder-active" : "icon-holder flex-col" }>
+                                <img 
+                                    src={ chatIcon } 
+                                    className={ this.state.chatActive ? 
+                                        "side-nav-icon icon-active" : "side-nav-icon" }/>
+                            </div>
+                            <div 
+                                onClick={ () => this.onExplore() }
+                                className={ this.state.exploreActive ? 
+                                    "icon-holder flex-col icon-holder-active" : "icon-holder flex-col" }>
+                                <img 
+                                    src={ exploreIcon } 
+                                    className={ this.state.exploreActive ? 
+                                        "side-nav-icon icon-active" : "side-nav-icon" }/>
                             </div>
                             <div 
                                 onClick={ () => this.onSettings() }
-                                className="icon-holder flex-col">
-                                <img src={ settingsIcon } className="side-nav-icon"/>
+                                className={ this.state.settingsActive ? 
+                                    "icon-holder flex-col icon-holder-active" : "icon-holder flex-col" }>
+                                <img 
+                                    src={ settingsIcon } 
+                                    className={ this.state.settingsActive ? 
+                                        "side-nav-icon icon-active" : "side-nav-icon" }/>
                             </div>
                             <div
                                 onClick={ () => this.onSignOut() }
@@ -84,36 +127,29 @@ class Main extends Component {
                             <Conversations />
                         )} path="/main/conversations" ></Route>
                         <Route render={ () => (
+                            <Explore />
+                        )} path="/main/explore"></Route>
+                        <Route render={ () => (
                             <Settings />
                         )} path="/main/settings"></Route>
                     </Switch>
 
                 </div>
-                <Dialog
-                    open={ this.state.dialogOpen }
-                    onClose={ () => this.handleClose(0) }
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description">
-                    
-                    <DialogTitle id="alert-dialog-title">Sign Out</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            You are going to be disconnected from this account. Are you sure you want to continue ?
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={ () => this.handleClose(0) } color="primary">
-                          No
-                        </Button>
-                        <Button onClick={ () => this.handleClose(1) } color="primary">
-                          Yes
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                
+                <SignOutDialog 
+                    dialogOpen={ this.state.dialogOpen }
+                    onClose={ this.handleClose }
+                    />
                 
             </div>
         )
     }
 }
 
-export default withRouter(connect()(Main))
+const mapState = appState => {
+    return {
+        authUser: appState.authUser
+    }
+}
+
+export default withRouter(connect(mapState)(Main))

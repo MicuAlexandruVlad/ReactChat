@@ -1,4 +1,5 @@
-$chat-bg: #684F7D;
+$chat-bg: #ffffff;
+$sep-color: #35244d41;
 
 .chat-body {
     flex: 4;
@@ -6,4 +7,72 @@ $chat-bg: #684F7D;
     background-color: $chat-bg;
     border-top-right-radius: 1.4rem;
     border-bottom-right-radius: 1.4rem;
+
+    .main-chat-body {
+        height: 100%;
+
+        .chat-top {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            align-items: center;
+
+            .chat-top-photo {
+                width: 50px;
+                height: 50px;
+                object-fit: cover;
+                border-radius: 50%;
+                margin-left: 2rem;
+            }
+
+            .chat-top-name {
+                color: black;
+                font-size: 1.2em;
+                margin-left: 1rem;
+                font-weight: 700;
+            }
+        }
+
+        .sep {
+            width: 100%;
+            background-color: $sep-color;
+            height: 1px;
+        }
+
+        .chat-window {
+            overflow-y: auto;
+        }
+
+        .chat-bottom {
+            margin-top: auto;
+            border-top: 1px solid $sep-color;
+            padding-top: 1.4rem;
+            padding-bottom: 1.4rem;
+
+            input {
+                border: none;
+                outline: none;
+                font-size: 1.2em;
+                margin-left: 2rem;
+                flex: 1
+            }
+
+            img {
+                width: 40px;
+                height: 40px;
+                object-fit: contain;
+                margin-right: 2rem;
+                cursor: pointer;
+                transition: .15s;
+                image-rendering: crisp-edges;
+                
+                &:hover {
+                    filter: saturate(1.8);
+                }
+            }
+        }
+    }
+}
+
+.hidden {
+    display: none;
 }

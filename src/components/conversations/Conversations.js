@@ -3,54 +3,16 @@ import { Route, Switch } from 'react-router-dom'
 import './Conversations.scss'
 import Chat from '../chat/Chat'
 import searchIcon from '../../assets/search.png'
+import deleteIcon from '../../assets/delete.png'
 import Conversation from '../../shared/components/conversation/Conversation'
+import { connect } from 'react-redux'
+import { setActive } from '../../actions/activeConversation'
+import { getActiveMessages } from '../../actions/activeConversationMessages'
 
-export default class Conversations extends Component {
+class Conversations extends Component {
 
     state = {
         filterValue: '',
-    }
-
-    mockData() {
-        const conv1 = {
-            id: 1,
-            firstName: "Daniel",
-            lastName: "Evans",
-            lastMessage: "Hey dude how's life ?",
-            timestamp: "14:53"
-        }
-
-        const conv2 = {
-            id: 2,
-            firstName: "John",
-            lastName: "Hawk",
-            lastMessage: "Got the book. Thanks",
-            timestamp: "12:21"
-        }
-
-        const conv3 = {
-            id: 3,
-            firstName: "Ema",
-            lastName: "Daner",
-            lastMessage: "I like that",
-            timestamp: "16:22"
-        }
-
-        const conv4 = {
-            id: 4,
-            firstName: "Jessica",
-            lastName: "Flint",
-            lastMessage: "Sure. We'll talk later.",
-            timestamp: "20:44"
-        }
-
-        const conversations = []
-        conversations.push(conv1)
-        conversations.push(conv2)
-        conversations.push(conv3)
-        conversations.push(conv4)
-
-        return conversations
     }
 
     onFilterChange = (event) => {
@@ -59,13 +21,35 @@ export default class Conversations extends Component {
         })
     }
 
+    onClearFilter() {
+        this.setState({
+            filterValue: ''
+        })
+    }
+
+    handleConversationClick = (conv) => {
+        this.props.dispatch(setActive(conv))
+        const activeMessages = []
+        const u1Id = conv.user1Id
+        const u2Id = conv.user2Id
+        this.props.messages.forEach((m) => {
+            if (m.senderId === u1Id || m.senderId === u2Id) {
+                if (m.receiverId === u1Id || m.receiverId === u2Id) {
+                    activeMessages.push(m)
+                }
+            }
+        })
+
+        this.props.dispatch(getActiveMessages(activeMessages))
+    }
+
     render() {
         return (
             <div className="flex-row main-conv-body">
                 <div className="conversations-body flex-col">
                     <div className="search-bar-holder flex-col">
                         <div className="search-bar flex-row">
-                            <img src={ searchIcon }/>
+                            <img className="search" src={ searchIcon }/>
                             <input 
                                 value={ this.state.filterValue } 
                                 type="text" 
@@ -73,14 +57,22 @@ export default class Conversations extends Component {
                                 spellCheck="false"
                                 onChange={ this.onFilterChange }
                                 />
+                            <img 
+                                src={ deleteIcon } 
+                                className="delete"
+                                onClick={ () => this.onClearFilter() }
+                                />
                         </div>
                     </div>
                     <div className="separator"></div>
                     <div className="conversation-list-holder">
-                        { this.mockData().map((conv) => {
-                            const fullName = conv.firstName + " " + conv.lastMessage
-                            if (fullName.includes(this.state.filterValue)) {
-                                return <Conversation key={ conv.id } conv={ conv } />
+                        { this.props.conversations.map((conv) => {
+                            const fullName = conv.firstName + " " + conv.lastName
+                            if (fullName.toLowerCase().includes(this.state.filterValue.toLowerCase())) {
+                                return <Conversation 
+                                            key={ conv.id } 
+                                            conv={ conv }
+                                            onConversation={ this.handleConversationClick } />
                             }
 
                         }) }
@@ -96,3 +88,13 @@ export default class Conversations extends Component {
         )
     }
 }
+
+
+const mapState = appState => {
+    return {
+        conversations: appState.conversations,
+        messages: appState.messages,
+    }
+}
+
+export default connect(mapState)(Conversations)

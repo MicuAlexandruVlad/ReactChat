@@ -3,17 +3,18 @@ import Client from '../utils/Client'
 
 const client = new Client()
 
-export default function users(state = {}, action) {
+export default function authUser(state = {}, action) {
     switch (action.type) {
         case AUTH_USER:
             const doc = action.snapshot.docs[0]
 
             let authState = Object.assign({}, state, {
+                id: doc.id,
                 email: doc.data().email,
                 firstName: doc.data().firstName,
                 lastName: doc.data().lastName,
                 hasPhoto: doc.data().hasPhoto,
-                photoId: doc.data().photoId,
+                photoUrl: doc.data().photoUrl,
             })
 
             console.log("Great success authenticating the user")
@@ -26,10 +27,8 @@ export default function users(state = {}, action) {
                 firstName: action.user.firstName,
                 lastName: action.user.lastName,
                 hasPhoto: action.user.hasPhoto,
-                photoId: action.user.photoId
-            })   
-
-            client.updateUser(updateState)
+                photoUrl: action.user.photoUrl
+            })
 
             return updateState
 
@@ -48,7 +47,7 @@ export default function users(state = {}, action) {
                             firstName: action.user.firstName,
                             lastName: action.user.lastName,
                             hasPhoto: action.user.hasPhoto,
-                            photoId: action.user.photoId,
+                            photoUrl: action.user.photoUrl,
                         })
                     })
                 }

@@ -6,19 +6,25 @@ import $ from 'jquery'
 import Input from '../../shared/components/input/Input'
 import Button from '../../shared/components/button/Button'
 import { connect } from 'react-redux'
+import Client from '../../utils/Client'
+import { updateUser } from '../../actions/authUser'
 
 class Settings extends Component {
 
     state = {
         firstName: '',
         lastName: '',
+        initialFirstName: '',
+        initialLastName: '',
         file: null
     }
 
     componentDidMount() {
         this.setState({
             firstName: this.props.authUser.firstName,
-            lastName: this.props.authUser.lastName
+            lastName: this.props.authUser.lastName,
+            initialFirstName: this.props.authUser.firstName,
+            initialLastName: this.props.authUser.lastName,
         })
     }
 
@@ -54,21 +60,53 @@ class Settings extends Component {
     handleSave = () => {
         if (this.state.firstName === '' || this.state.lastName === '') {
             alert('One or more fields are empty')
-        } else {
+        } else if (this.state.firstName !== this.state.initialFirstName || 
+                this.state.lastName !== this.state.initialLastName || this.state.file !== null){
             // TODO: update user
+            const client = new Client()
+
+            if (this.state.file !== null) {
+                var uploadTask = client.uploadPhoto(this.state.file, this.props.authUser.id)
+                
+                uploadTask.on('state-changed', null, null, () => {
+                    uploadTask.snapshot.ref.getDownloadURL().then(downloadUrl => {
+                        console.log('Image uploaded; download url: ', downloadUrl)
+                        const user = {
+                            id: this.props.authUser.id,
+                            firstName: this.state.firstName,
+                            lastName: this.state.lastName,
+                            hasPhoto: true,
+                            photoUrl: downloadUrl
+                        }
+                        client.updateUser()
+                        this.props.dispatch(updateUser(user))
+                    })
+                })
+            } else if (this.state.firstName !== this.state.initialFirstName || 
+                this.state.lastName !== this.state.initialLastName) {
+                    const user = {
+                        id: this.props.authUser.id,
+                        firstName: this.state.firstName,
+                        lastName: this.state.lastName,
+                        hasPhoto: this.props.authUser.hasPhoto,
+                        photoUrl: this.props.authUser.photoUrl
+                    }
+                    client.updateUser(user)
+                    this.props.dispatch(updateUser(user))
+            }
         }
     }
 
     render() {
         return (
             <div className="settings-body flex-col">
-                <h1>Profile Settings</h1>
+                <h1>Edit Profile</h1>
                 <div 
                     onClick={ () => this.onPhotoChange() }
                     className="photo-holder">
                     <img 
                         className="profile-img" 
-                        src={ profilePlaceholder }
+                        src={ this.props.authUser.hasPhoto ? this.props.authUser.photoUrl : profilePlaceholder }
                         id="profileImg"/>
                     <input 
                         id="fileInput" 
@@ -108,7 +146,7 @@ class Settings extends Component {
 
 const mapState = appState => {
     return {
-        authUser: appState.users
+        authUser: appState.authUser
     }
 }
 

@@ -1,0 +1,39 @@
+
+$bg-color: #F6F6F6;
+
+
+.message-received-body {
+    align-items: center;
+    margin-left: 2rem;
+    max-width: 740px;
+
+    .message-received-triangle {
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 5px 10px 5px 0;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        border-color: transparent #f6f6f6 transparent transparent;
+    }
+
+    .message-received-holder {
+        background-color: $bg-color;
+        padding-left: 1.4rem;
+        padding-right: 1.4rem;
+        padding-top: .6rem;
+        padding-bottom: .6rem;
+        border-radius: .6rem;
+
+        .meesage-received {
+            color: black;
+            font-size: 1.1em;
+        }
+    }
+
+    .message-received-timestamp {
+        font-size: .8em;
+        color: rgba(0, 0, 0, 0.5);
+        margin-left: 1rem;
+    }
+}

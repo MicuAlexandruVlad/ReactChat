@@ -1,0 +1,23 @@
+
+
+
+.explore-body {
+    width: 100%;
+    background-color: white;
+    align-items: center;
+    overflow-y: auto;
+    padding-bottom: 2rem;
+
+    h1 {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .user-holder {
+        max-width: 1150px;
+        margin-top: 2rem;
+        margin-left: 1.4rem;
+        margin-right: 1.4rem;
+        flex-wrap: wrap;
+    }
+}

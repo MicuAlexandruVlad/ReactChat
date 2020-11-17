@@ -30,7 +30,7 @@ class Register extends Component {
                 firstName: this.state.firstName,
                 lastName: this.state.lastName,
                 hasPhoto: false,
-                photoId: ''
+                photoUrl: ''
             }
 
 

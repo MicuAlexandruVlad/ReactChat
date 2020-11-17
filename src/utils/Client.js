@@ -37,6 +37,12 @@ export default class Client {
             .get()
     }
 
+    getUsers() {
+        return this.init()
+            .collection("users")
+            .get()
+    }
+
     registerUser(user) {
         return this.init()
             .collection("users")
@@ -45,26 +51,61 @@ export default class Client {
                 password: user.password,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                hasPhoto: user.hasPhoto
+                hasPhoto: user.hasPhoto,
+                photoUrl: user.photoUrl
             })
     }
 
     updateUser(user) {
         return this.init()
             .collection("users")
-            .set({
+            .doc(user.id)
+            .update({
                 firstName: user.firstName,
                 lastName: user.lastName,
                 hasPhoto: user.hasPhoto,
-                photoId: user.photoId
+                photoUrl: user.photoUrl
+            }).then(() => {
+                console.log('User updated in firestore')
             })
     }
 
-    uploadPhoto(file) {
+    uploadPhoto(file, userId) {
         var storageRef = firebase.storage().ref()
 
-        storageRef.put(file).then((snapshot) => {
-            console.log('Image uploaded')
-        })
+        return storageRef.child(`images/${userId}.jpg`).put(file)
+    }
+
+    getSentMessages(userId) {
+        return this.init()
+            .collection('messages')
+            .where('senderId', '==', userId)
+            .orderBy('timestamp')
+            .get()
+    }
+
+    getReceivedMessages(userId) {
+        return this.init()
+            .collection('messages')
+            .where('receiverId', '==', userId)
+            .orderBy('timestamp')
+            .get()
+    }
+
+    uploadMessage(message) {
+        return this.init()
+            .collection('messages')
+            .add({
+                senderId: message.senderId,
+                receiverId: message.receiverId,
+                timestamp: message.timestamp,
+                text: message.text
+            })
+    }
+
+    listenForMessages(userId) {
+        return this.init()
+            .collection('messages')
+            .where('receiverId', '==', userId)
     }
 }
