@@ -107,5 +107,6 @@ export default class Client {
         return this.init()
             .collection('messages')
             .where('receiverId', '==', userId)
+            .orderBy('timestamp')
     }
 }

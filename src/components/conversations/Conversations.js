@@ -40,6 +40,7 @@ class Conversations extends Component {
             }
         })
 
+
         this.props.dispatch(getActiveMessages(activeMessages))
     }
 

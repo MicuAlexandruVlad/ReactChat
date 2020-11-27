@@ -3,7 +3,7 @@ import Client from '../utils/Client'
 
 const client = new Client()
 
-export default function messages(state = [], action) {
+export default function m(state = [], action) {
     switch (action.type) {
         case NEW_MESSAGE:
             
@@ -20,7 +20,7 @@ export default function messages(state = [], action) {
                     timestamp: doc.data().timestamp
                 }
                 
-                console.log(message)
+                // console.log(message)
                 m.push(message)
             })
 
@@ -32,9 +32,24 @@ export default function messages(state = [], action) {
                     text: doc.data().text,
                     timestamp: doc.data().timestamp
                 }
-                console.log(message)
+                // console.log(message)
                 m.push(message)
             })
+
+            for (let i = 0; i < m.length; i++) {
+                var message1 = m[i];
+                for (let j = 0; j < m.length; j++) {
+                    var message2 = m[j];
+                    
+                    if (message1.timestamp > message2.timestamp) {
+                        var aux = m[i]
+                        m[i] = m[j]
+                        m[j] = aux
+                    }
+                }
+            }
+
+            m.reverse()
 
             return Object.assign([], state, state.concat(m))
             

@@ -7,9 +7,10 @@ import Register from '../register/Register'
 import Main from '../main/Main'
 import Client from '../../utils/Client'
 import { authUser } from '../../actions/authUser';
-import { newConversation } from '../../actions/conversations';
+import { newConversation, updateConversation } from '../../actions/conversations';
 import { get } from 'jquery';
-import { getMessages } from '../../actions/messages';
+import { getMessages, newMessage } from '../../actions/messages';
+import { newActiveMessage } from '../../actions/activeConversationMessages';
 
 class App extends Component {
 
@@ -33,9 +34,44 @@ class App extends Component {
 
         client.listenForMessages(userId).onSnapshot(querySnapshot => {
           console.log('New message for me')
-          querySnapshot.forEach(doc => {
-            // console.log(doc.data())
-          })
+          let lastMessage = querySnapshot.docs[querySnapshot.docs.length - 1]
+          
+          if (lastMessage !== undefined) {
+            let convId = ''
+
+            const m = {
+              id: lastMessage.id,
+              convId: -1,
+              senderId: lastMessage.data().senderId,
+              receiverId: lastMessage.data().receiverId,
+              text: lastMessage.data().text,
+              timestamp: lastMessage.data().timestamp
+            }
+
+            if (this.props.activeConversation.user1Id === lastMessage.data().senderId || this.props.activeConversation.user2Id === lastMessage.data().senderId) {
+              convId = this.props.activeConversation.id
+              m.convId = convId
+              this.props.dispatch(newActiveMessage(m))
+              let conv = this.props.activeConversation
+              conv.lastMessage = m.text
+              conv.timestamp = m.timestamp
+              this.props.dispatch(updateConversation(conv))
+            } else {
+              for (let index = 0; index < this.props.conversations.length; index++) {
+                const conv = this.props.conversations[index];
+                if (conv.user1Id === lastMessage.data().senderId || conv.user2Id === lastMessage.data().senderId) {
+                  convId = conv.id
+                  m.convId = convId
+                  conv.lastMessage = m.text
+                  conv.timestamp = m.timestamp
+                  this.props.dispatch(updateConversation(conv))
+                  break
+                }
+              }
+            }
+
+            this.props.dispatch(newMessage(m))
+          }
         })
       })
     }
@@ -84,7 +120,8 @@ class App extends Component {
 
 const mapState = appState => {
   return {
-    conversations: appState.conversations
+    conversations: appState.conversations,
+    activeConversation: appState.activeConversation
   }
 }
 

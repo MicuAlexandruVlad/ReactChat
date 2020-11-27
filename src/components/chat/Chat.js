@@ -12,15 +12,27 @@ import Client from '../../utils/Client'
 
 class Chat extends Component {
 
-    // lastChange = 1 -> conversation changed last
-    // lastChange = 2 -> chat box changed last
-
     state = {
         chatBoxValue: '',
-        temporaryId: 0
+        temporaryId: 0,
+        chatBoxUpdate: false
     }
 
     componentDidMount() {
+        this.updateScroll()
+
+        $("#chat-box").on('focusin', () => {
+            this.setState({
+                chatBoxUpdate: true
+            })
+        })
+
+        $("#chat-box").on('focusout', () => {
+            this.setState({
+                chatBoxUpdate: false
+            })
+        })
+
         $("#chat-box").on('keypress', (e) => {
             if (e.which === 13) {
                 if (this.state.chatBoxValue !== '') {
@@ -51,6 +63,8 @@ class Chat extends Component {
                         temporaryId: state.temporaryId++
                     }))
 
+                    this.updateScroll()
+
                     const client = new Client()
 
                     client.uploadMessage(message).then((docRef) => {
@@ -63,10 +77,17 @@ class Chat extends Component {
 
     componentDidUpdate() {
         // TODO: get the messages for this conversation
+        if (!this.state.chatBoxUpdate) {
+            this.updateScroll()
+        }
+    }
+
+    updateScroll() {
+        var chatWindow = document.getElementById("chat-window");
+        chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
     handleChatBoxValueChange = (event) => {
-        // console.log(event.target.value)
         this.setState({
             chatBoxValue: event.target.value,
             lastChange: 2
@@ -91,13 +112,15 @@ class Chat extends Component {
                         }</span>
                     </div>
                     <div className="sep"></div>
-                    <div className="chat-window">
+                    <div 
+                        id="chat-window"
+                        className="chat-window">
                         {
                             this.props.activeConversationMessages.map((m) => {
                                 if (m.senderId === this.props.authUser.id) {
-                                    return <MessageSent message={ m } />
+                                    return <MessageSent key={ m.id } message={ m } />
                                 } else {
-                                    return <MessageReceived message={ m } />
+                                    return <MessageReceived key={ m.id } message={ m } />
                                 }
                             })
                         }
@@ -109,6 +132,7 @@ class Chat extends Component {
                             value={ this.state.chatBoxValue }
                             placeholder="Type your message here"
                             spellCheck="false"
+                            autoComplete="off"
                             type="text"/>
                         <img src={ sendIcon } />
                     </div>
